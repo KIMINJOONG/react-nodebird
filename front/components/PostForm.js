@@ -25,7 +25,7 @@ const PostForm = () => {
         placeholder="어떤 신기한 일이 있었나요?"
       />
       <div>
-        <input type="file" mutiple hidden />
+        <input type="file" multiple hidden />
         <Button>이미지 업로드</Button>
         <Button type="primary" style={{ float: "right" }} htmlType="submit">
           짹짹
