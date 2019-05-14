@@ -32,6 +32,7 @@ NodeBird.propTypes = {
 
 export default withRedux((initialState, options) => {
   const middlewares = [];
+  
   const enhancer = compose(
     applyMiddleware(...middlewares),
     !options.isServer && window.__REDUX_DEVTOOLS_EXTENSION__ !== "undefined"

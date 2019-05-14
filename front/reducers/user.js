@@ -15,6 +15,8 @@ export const initialState = {
 export const SIGN_UP = "SGIN_UP";
 export const LOG_IN = "LOG_IN"; // 액션의 이름
 export const LOG_OUT = "LOG_OUT";
+export const LOG_IN_SUCCESS = "LOG_IN_SUCCESS";
+export const LOG_IN_FAILURE = "LOG_IN_FAILURE";
 
 // 동적인 데이터는 함수로 만들어줌 signup.js도 참고할것
 export const signUpAction = data => {
