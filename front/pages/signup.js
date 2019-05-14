@@ -1,6 +1,8 @@
 import React, { useState, useCallback } from "react";
 import { Form, Input, Checkbox, Button } from "antd";
-
+import { signUpAction } from "../reducers/user";
+import { useDispatch } from "react-redux";
+// 보통은 이런형식으로 react state와 redux state를 같이사용함
 const Signup = () => {
   const [passwordCheck, setPasswordCheck] = useState("");
   const [term, setTerm] = useState(false);
@@ -18,6 +20,7 @@ const Signup = () => {
   const [id, onChangeId] = useInput("");
   const [nick, onChangeNick] = useInput("");
   const [password, onChangePassword] = useInput("");
+  const dispatch = useDispatch();
 
   const onSubmit = useCallback(
     e => {
@@ -28,13 +31,13 @@ const Signup = () => {
       if (!term) {
         return setTermError(true);
       }
-      console.log({
-        id,
-        nick,
-        password,
-        passwordCheck,
-        term
-      });
+      dispatch(
+        signUpAction({
+          id,
+          password,
+          nick
+        })
+      );
     },
     [password, passwordCheck, term]
   );

@@ -3,7 +3,8 @@ const dummyUser = {
   Post: [],
   Followings: [],
   Followers: [],
-  isLoggedIn: false
+  isLoggedIn: false,
+  signUpData: {}
 };
 
 export const initialState = {
@@ -11,9 +12,17 @@ export const initialState = {
   user: null
 };
 
+export const SIGN_UP = "SGIN_UP";
 export const LOG_IN = "LOG_IN"; // 액션의 이름
 export const LOG_OUT = "LOG_OUT";
 
+// 동적인 데이터는 함수로 만들어줌 signup.js도 참고할것
+export const signUpAction = data => {
+  return {
+    type: SIGN_UP,
+    data: data
+  };
+};
 export const loginAction = {
   type: LOG_IN
 };
@@ -36,6 +45,12 @@ const reducer = (state = initialState, action) => {
         ...state,
         isLoggedIn: false,
         user: null
+      };
+    }
+    case SIGN_UP: {
+      return {
+        ...state,
+        signUpData: action.data
       };
     }
     default: {
