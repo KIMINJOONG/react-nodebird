@@ -24,19 +24,17 @@ function* login() {
 }
 
 function* watchLogin() {
-  yield takeLatest(LOG_IN, login);
-}
-
-function* helloSaga() {
-  console.log("before saga");
-  // while -> eventListner를 동기적으로 표현했다고 이해하기
   while (true) {
-    yield take(HELLO_SAGA);
-    console.log("hello saga");
-    // 비동기 요청, 타이머 넣어도 가능
+    yield take(LOG_IN);
+    // put => saga의 dispatch임
+    yield put({
+      type: LOG_IN_SUCCESS
+    });
   }
 }
 
+function* watchSignUp() {}
+
 export default function* userSaga() {
-  yield helloSaga();
+  yield all([watchLogin(), watchSignUp()]);
 }

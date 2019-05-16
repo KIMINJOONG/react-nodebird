@@ -7,14 +7,7 @@ const Home = () => {
   const { isLoggedIn } = useSelector(state => state.user);
   const { mainPosts } = useSelector(state => state.post);
   const dispatch = useDispatch();
-  useEffect(() => {
-    dispatch({
-      type: "HELLO_SAGA"
-    }),
-      dispatch({
-        type: "HELLO_SAGA"
-      });
-  }, []);
+  useEffect(() => {}, []);
   return (
     <div>
       {isLoggedIn && <PostForm />}
