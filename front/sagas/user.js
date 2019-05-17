@@ -18,7 +18,9 @@ function loginAPI() {
 
 function* login() {
   try {
-    yield call(loginAPI);
+    // call 동기호출
+    // fork 비동기호출
+    yield call(loginAPI); // fork를 하면 서버에 응답이 오기전에 다음거로 넘어감
     yield put({
       //put은 dispatch와 동일
       type: LOG_IN_SUCCESS
@@ -33,22 +35,17 @@ function* login() {
 }
 
 function* watchLogin() {
-  while (true) {
-    yield take(LOG_IN);
-    // put => saga의 dispatch임
-    yield delay(2000);
-    yield put({
-      type: LOG_IN_SUCCESS
-    });
-  }
+  yield takeEvery(LOG_IN, login);
 }
 
 function* watchHello() {
-  yield takeLatest(HELLO_SAGA, function*() {
-    yield delay(1000);
-    yield put({
-      type: "BYE_SAGA"
-    });
+  yield takeLatest(HELLO_SAGA, hello);
+}
+
+function* hello() {
+  yield delay(1000);
+  yield put({
+    type: "BYE_SAGA"
   });
 }
 
@@ -65,5 +62,5 @@ function* watchHello() {
 function* watchSignUp() {}
 
 export default function* userSaga() {
-  yield all([watchHello(), watchLogin(), watchSignUp()]);
+  yield all([fork(watchHello), fork(watchLogin)]);
 }
