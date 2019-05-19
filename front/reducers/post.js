@@ -15,6 +15,26 @@ export const initialState = {
   isAddingPost: false // 포스트 업로드 중
 };
 
+const dummyPost = {
+  id: 2,
+  User: {
+    id: 1,
+    nickname: "제로초"
+  },
+  content: "나는 더미입니다.",
+  Comments: []
+};
+
+const dummyComment = {
+  id: 1,
+  User: {
+    id: 1,
+    nickname: "제로초"
+  },
+  createdAt: new Date(),
+  content: "더미 댓글입니다."
+};
+
 export const LOAD_MAIN_POST_REQUEST = "LOAD_MAIN_POST_REQUEST";
 export const LOAD_MAIN_POST_SUCCESS = "LOAD_MAIN_POST_SUCCESS";
 export const LOAD_MAIN_POST_FAILURE = "LOAD_MAIN_POST_FAILURE";
@@ -61,32 +81,17 @@ export const ADD_POST_REQUEST = "ADD_POST_REQUEST";
 export const ADD_POST_SUCCESS = "ADD_POST_SUCCESS";
 export const ADD_POST_FAILURE = "ADD_POST_FAILURE";
 
-const addPost = {
-  type: ADD_POST
-};
-
-const addDummy = {
-  type: ADD_DUMMY,
-  data: {
-    content: "hello",
-    userId: "1",
-    User: {
-      nickname: "인중초"
-    }
-  }
-};
-
 const reducer = (state = initialState, action) => {
-  switch (action) {
-    case ADD_POST: {
+  switch (action.type) {
+    case ADD_POST_REQUEST: {
       return {
         ...state
       };
     }
-    case ADD_DUMMY: {
+    case ADD_POST_SUCCESS: {
       return {
         ...state,
-        mainPosts: [action.data, ...state.mainPosts]
+        mainPosts: [dummyPost, ...state.mainPosts]
       };
     }
     default: {

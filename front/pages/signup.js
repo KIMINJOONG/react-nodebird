@@ -1,7 +1,7 @@
 import React, { useState, useCallback } from "react";
 import { Form, Input, Checkbox, Button } from "antd";
 import { signUpAction } from "../reducers/user";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 // 보통은 이런형식으로 react state와 redux state를 같이사용함
 const Signup = () => {
   const [passwordCheck, setPasswordCheck] = useState("");
@@ -21,6 +21,7 @@ const Signup = () => {
   const [nick, onChangeNick] = useInput("");
   const [password, onChangePassword] = useInput("");
   const dispatch = useDispatch();
+  const { isSigningUp } = useSelector(state => state.user);
 
   const onSubmit = useCallback(
     e => {
@@ -105,7 +106,7 @@ const Signup = () => {
             )}
           </div>
           <div style={{ marginTop: 10 }}>
-            <Button type="primary" htmlType="submit">
+            <Button type="primary" htmlType="submit" loading={isSigningUp}>
               가입하기
             </Button>
           </div>

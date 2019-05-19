@@ -36,7 +36,8 @@ function* login() {
     //loadingAPI 실패
     console.log(e);
     yield put({
-      type: LOG_IN_FAILURE
+      type: LOG_IN_FAILURE,
+      error: e
     });
   }
 }
@@ -53,7 +54,7 @@ function* signUp() {
   try {
     // call 동기호출
     // fork 비동기호출
-    yield call(loginAPI); // fork를 하면 서버에 응답이 오기전에 다음거로 넘어감
+    yield call(signUpAPI); // fork를 하면 서버에 응답이 오기전에 다음거로 넘어감
     yield put({
       //put은 dispatch와 동일
       type: SIGN_UP_SUCCESS
