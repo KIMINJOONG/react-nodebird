@@ -1,19 +1,50 @@
-import React from "react";
+import React, { useCallback, useState, useEffect } from "react";
 import { Form, Input, Button } from "antd";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { ADD_POST_REQUEST } from "../reducers/post";
 
 const PostForm = () => {
-  const { imagePaths } = useSelector(state => state.post);
+  const dispatch = useDispatch();
+  const { text, setText } = useState("");
+  const { imagePaths, isAddingPost, postAdded } = useSelector(
+    state => state.post
+  );
+
+  useEffect(() => {
+    setText("");
+  }, [postAdded === true]);
+
+  const onSubmitForm = useCallback(() => {
+    dispatch({
+      type: ADD_POST_REQUEST,
+      data: {
+        text
+      }
+    });
+  }, []);
+  const onChangeText = useCallback(e => {
+    setText(e.target.value);
+  }, []);
   return (
-    <Form style={{ margin: "10px 0 20px" }} encType="multipart/form-data">
+    <Form
+      style={{ margin: "10px 0 20px" }}
+      encType="multipart/form-data"
+      onSubmit={onSubmitForm}
+    >
       <Input.TextArea
         maxLength={140}
         placeholder="어떤 신기한 일이 있었나요?"
+        value={text}
       />
       <div>
         <input type="file" multiple hidden />
         <Button>이미지 업로드</Button>
-        <Button type="primary" style={{ float: "right" }} htmlType="submit">
+        <Button
+          type="primary"
+          style={{ float: "right" }}
+          htmlType="submit"
+          isLoading={isAddingPost}
+        >
           짹짹
         </Button>
       </div>

@@ -12,7 +12,8 @@ export const initialState = {
   ], // 화면에 보일 포스트들
   imagePaths: [], //미리보기 이미지 경로
   addPostErrorReason: false, // 포스트 업로드 실패 사유
-  isAddingPost: false // 포스트 업로드 중
+  isAddingPost: false, // 포스트 업로드 중
+  postAdded: false //포스트 업로드 성공
 };
 
 const dummyPost = {
@@ -85,13 +86,25 @@ const reducer = (state = initialState, action) => {
   switch (action.type) {
     case ADD_POST_REQUEST: {
       return {
-        ...state
+        ...state,
+        isAddingPost: true,
+        postAdded: false
       };
     }
     case ADD_POST_SUCCESS: {
       return {
         ...state,
-        mainPosts: [dummyPost, ...state.mainPosts]
+        isAddingPost: false,
+        mainPosts: [dummyPost, ...state.mainPosts],
+        postAdded: true
+      };
+    }
+    case ADD_POST_FAILURE: {
+      return {
+        ...state,
+        isAddingPost: false,
+        addPostErrorReason: action.error,
+        postAdded: false
       };
     }
     default: {
