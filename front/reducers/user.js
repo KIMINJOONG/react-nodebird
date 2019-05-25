@@ -2,7 +2,8 @@ const dummyUser = {
   nickname: "김인중",
   Post: [],
   Followings: [],
-  Followers: []
+  Followers: [],
+  id: 1
 };
 
 export const initialState = {
