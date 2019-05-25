@@ -5,7 +5,7 @@ import { ADD_POST_REQUEST } from "../reducers/post";
 
 const PostForm = () => {
   const dispatch = useDispatch();
-  const { text, setText } = useState("");
+  const [text, setText] = useState("");
   const { imagePaths, isAddingPost, postAdded } = useSelector(
     state => state.post
   );
@@ -14,7 +14,8 @@ const PostForm = () => {
     setText("");
   }, [postAdded === true]);
 
-  const onSubmitForm = useCallback(() => {
+  const onSubmitForm = useCallback(e => {
+    e.preventDefault(); //리액트에서 form같은 경우는 무조건 붙여준다
     dispatch({
       type: ADD_POST_REQUEST,
       data: {
@@ -35,6 +36,7 @@ const PostForm = () => {
         maxLength={140}
         placeholder="어떤 신기한 일이 있었나요?"
         value={text}
+        onChange={onChangeText}
       />
       <div>
         <input type="file" multiple hidden />
@@ -43,7 +45,7 @@ const PostForm = () => {
           type="primary"
           style={{ float: "right" }}
           htmlType="submit"
-          isLoading={isAddingPost}
+          loading={isAddingPost}
         >
           짹짹
         </Button>
