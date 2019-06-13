@@ -19,15 +19,16 @@ import {
 
 import axios from "axios";
 
-function loginAPI() {
+function loginAPI(loginData) {
   //서버에 요청을 보내는부분
+  return axios.post("/login", loginData);
 }
 
-function* login() {
+function* login(action) {
   try {
     // call 동기호출
     // fork 비동기호출
-    yield call(loginAPI); // fork를 하면 서버에 응답이 오기전에 다음거로 넘어감
+    yield call(loginAPI, action.data); // fork를 하면 서버에 응답이 오기전에 다음거로 넘어감
     yield put({
       //put은 dispatch와 동일
       type: LOG_IN_SUCCESS
