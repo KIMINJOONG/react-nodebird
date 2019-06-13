@@ -3,6 +3,7 @@ const router = express.Router();
 const db = require("../models");
 const bcrypt = require("bcrypt");
 
+
 router.get("/", (req, res) => {}); // /api/user
 router.post("/", async (req, res, next) => {
   try {
