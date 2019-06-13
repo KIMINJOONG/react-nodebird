@@ -46,15 +46,15 @@ function* watchLogin() {
   yield takeEvery(LOG_IN_REQUEST, login);
 }
 
-function signUpAPI() {
-  return axios.post("/login");
+function signUpAPI(signUpData) {
+  return axios.post("http://localhost:3065/api/user/", signUpData);
 }
 
-function* signUp() {
+function* signUp(action) {
   try {
     // call 동기호출
     // fork 비동기호출
-    yield call(signUpAPI); // fork를 하면 서버에 응답이 오기전에 다음거로 넘어감
+    yield call(signUpAPI, action.data); // fork를 하면 서버에 응답이 오기전에 다음거로 넘어감
     yield put({
       //put은 dispatch와 동일
       type: SIGN_UP_SUCCESS

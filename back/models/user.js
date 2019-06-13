@@ -18,7 +18,7 @@ module.exports = (sequelize, DataTypes) => {
     },
     {
       charset: "utf8",
-      collate: "utf8-_general_ci" //두개를 해줘야 한글이 됨
+      collate: "utf8_unicode_ci" //두개를 해줘야 한글이 됨
     }
   );
   User.associate = db => {

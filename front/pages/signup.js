@@ -42,9 +42,9 @@ const Signup = () => {
       }
       dispatch(
         signUpAction({
-          id,
+          userId: id,
           password,
-          nick
+          nickname: nick
         })
       );
     },

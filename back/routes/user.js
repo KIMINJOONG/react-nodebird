@@ -1,27 +1,28 @@
 const express = require("express");
 const router = express.Router();
-const db = require('../models');
+const db = require("../models");
+const bcrypt = require("bcrypt");
 
 router.get("/", (req, res) => {}); // /api/user
-router.post("/", (req, res, next) => {
-  try{
+router.post("/", async (req, res, next) => {
+  try {
     const exUser = await db.User.findOne({
       where: {
         userId: req.body.userId
       }
     });
-    if(exUser){
+    if (exUser) {
       return res.status(404).send("이미 사용중인 아이디입니다.");
     }
     const hashedPassword = await bcrypt.hash(req.body.password, 12);
     const newUser = await db.User.create({
       nickname: req.body.nickname,
       userId: req.body.userId,
-      password: hashedPassword,
+      password: hashedPassword
     });
     console.log(newUser);
     return res.status(200).json(newUser);
-  }catch(e){
+  } catch (e) {
     console.error(e);
     //에러 처리 넘기기
     return next(e);
