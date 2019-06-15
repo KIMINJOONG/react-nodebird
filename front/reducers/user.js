@@ -1,10 +1,4 @@
-const dummyUser = {
-  nickname: "김인중",
-  Post: [],
-  Followings: [],
-  Followers: [],
-  id: 1
-};
+
 
 export const initialState = {
   isLoggedIn: false, // 로그인 여부
@@ -85,7 +79,7 @@ const reducer = (state = initialState, action) => {
       return {
         ...state,
         isLoggedIn: true,
-        me: dummyUser,
+        me: action.data,
         isLoading: false
       };
     }

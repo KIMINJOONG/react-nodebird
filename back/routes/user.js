@@ -30,7 +30,11 @@ router.post("/", async (req, res, next) => {
   }
 });
 router.get("/:id", (req, res) => {}); // 남의 정보 가져오는 것 ex)/api/user/3
-router.post("/logout", (req, res) => {}); // /api/user/logout
+router.post("/logout", (req, res) => {
+    req.logout();
+    req.session.destroy();
+    res.send('login성공');
+}); // /api/user/logout
 
 router.post("/login", (req, res, next) => {
   passport.authenticate("local", (err, user, info) => {
@@ -45,11 +49,12 @@ router.post("/login", (req, res, next) => {
       if (loginErr) {
         return next(loginErr);
       }
-      const filteredUser = Object.assign({}, user);
+      console.log('login success', req.user);
+      const filteredUser = Object.assign({}, user.toJSON());
       delete filteredUser.password;
       return res.json(filteredUser);
     });
-  });
+  })(req,res,next);
 });
 
 router.post("/:id/follow", (req, res) => {});

@@ -19,19 +19,25 @@ import {
 
 import axios from "axios";
 
+axios.defaults.baseURL = 'http://localhost:3065/api';
+
+
 function loginAPI(loginData) {
   //서버에 요청을 보내는부분
-  return axios.post("/login", loginData);
+  return axios.post("/user/login", loginData, {
+    withCredentials: true
+  });
 }
 
 function* login(action) {
   try {
     // call 동기호출
     // fork 비동기호출
-    yield call(loginAPI, action.data); // fork를 하면 서버에 응답이 오기전에 다음거로 넘어감
+    const result = yield call(loginAPI, action.data); // fork를 하면 서버에 응답이 오기전에 다음거로 넘어감
     yield put({
       //put은 dispatch와 동일
-      type: LOG_IN_SUCCESS
+      type: LOG_IN_SUCCESS,
+      data: result.data
     });
   } catch (e) {
     //loadingAPI 실패
@@ -48,7 +54,7 @@ function* watchLogin() {
 }
 
 function signUpAPI(signUpData) {
-  return axios.post("http://localhost:3065/api/user/", signUpData);
+  return axios.post("/user/", signUpData);
 }
 
 function* signUp(action) {

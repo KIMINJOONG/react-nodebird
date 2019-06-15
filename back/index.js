@@ -20,7 +20,10 @@ app.use(morgan("dev"));
 app.use(express.json()); // json형식의 본문
 app.use(express.urlencoded({ extended: true })); // form을 처리하는것
 // API는 다른 서비스가 내 서비스의 기능을 실행할수 있게 열어둔 창구
-app.use(cors());
+app.use(cors({
+  origin: true,
+  credentials: true
+}));
 app.use(cookieParser(process.env.COOKIE_SECRET));
 app.use(
   expressSession({
@@ -30,7 +33,8 @@ app.use(
     cookie: {
       httpOnly: true,
       secure: false //https를 쓸때 true
-    }
+    },
+    name: 'rnbck'
   })
 );
 app.use(passport.initialize());
