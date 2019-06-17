@@ -25,8 +25,8 @@ module.exports = (sequelize, DataTypes) => {
     db.User.hasMany(db.Post, { as: "Posts" });
     db.User.hasMany(db.Comment); // 한명이 (게시글, 코멘트)여러개를 쓸 수 있다.
     db.User.belongsToMany(db.Post, { through: "Like", as: "Liked" }); // through=중간테이블명, belongsToMany는 as를 넣어주는게 좋다
-    db.User.belongsToMany(db.User, { through: "Follow", as: "Followers" }); // as 는 이름이 같을시 구별용도로
-    db.User.belongsToMany(db.User, { through: "Follow", as: "Followings" });
+    db.User.belongsToMany(db.User, { through: "Follow", as: "Followers", foreignKey: 'followingId' }); // as 는 이름이 같을시 구별용도로
+    db.User.belongsToMany(db.User, { through: "Follow", as: "Followings", foreignKey: 'followerId' });
   };
   return User;
 };

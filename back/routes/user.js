@@ -21,7 +21,6 @@ router.post("/", async (req, res, next) => {
       userId: req.body.userId,
       password: hashedPassword
     });
-    console.log(newUser);
     return res.status(200).json(newUser);
   } catch (e) {
     console.error(e);
@@ -33,7 +32,7 @@ router.get("/:id", (req, res) => {}); // 남의 정보 가져오는 것 ex)/api/
 router.post("/logout", (req, res) => {
     req.logout();
     req.session.destroy();
-    res.send('login성공');
+    res.send('logout성공');
 }); // /api/user/logout
 
 router.post("/login", (req, res, next) => {
@@ -45,14 +44,32 @@ router.post("/login", (req, res, next) => {
     if (info) {
       return res.status(401).send(info.reason);
     }
-    return req.login(user, loginErr => {
+    return req.login(user, async (loginErr) => {
       if (loginErr) {
         return next(loginErr);
       }
-      console.log('login success', req.user);
-      const filteredUser = Object.assign({}, user.toJSON());
-      delete filteredUser.password;
-      return res.json(filteredUser);
+      const fullUser = await db.User.findOne({
+        where: {id : user.id},
+        // include: [{
+        //   model: db.Post,
+        //   as: 'Posts',
+        //   attributes: ['id']
+        // },
+        // {
+        //   model: db.User,
+        //   as: 'Followings',
+        //   attributes: ['id']
+        // }, 
+        // {
+        //   model: db.User,
+        //   as: 'Followers',
+        //   attributes: ['id']
+        // }
+      //],
+        attributes: ['id', 'nickname', 'userId']
+      })
+      console.log(fullUser);
+      return res.json(fullUser);
     });
   })(req,res,next);
 });
