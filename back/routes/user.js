@@ -57,25 +57,24 @@ router.post("/login", (req, res, next) => {
       }
       const fullUser = await db.User.findOne({
         where: {id : user.id},
-        // include: [{
-        //   model: db.Post,
-        //   as: 'Posts',
-        //   attributes: ['id']
-        // },
-        // {
-        //   model: db.User,
-        //   as: 'Followings',
-        //   attributes: ['id']
-        // }, 
-        // {
-        //   model: db.User,
-        //   as: 'Followers',
-        //   attributes: ['id']
-        // }
-      //],
+        include: [{
+          model: db.Post,
+          as: 'Posts',
+          attributes: ['id']
+        },
+        {
+          model: db.User,
+          as: 'Followings',
+          attributes: ['id']
+        }, 
+        {
+          model: db.User,
+          as: 'Followers',
+          attributes: ['id']
+        }
+      ],
         attributes: ['id', 'nickname', 'userId']
       })
-      console.log(fullUser);
       return res.json(fullUser);
     });
   })(req,res,next);
