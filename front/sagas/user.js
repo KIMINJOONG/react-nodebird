@@ -25,7 +25,7 @@ import {
 
 import axios from "axios";
 
-axios.defaults.baseURL = 'http://localhost:3065/api';
+
 
 
 function logInAPI(logInData) {
