@@ -18,8 +18,8 @@ const Home = () => {
   return (
     <div>
       {me && <PostForm />}
-      {mainPosts.map(c => {
-        return <PostCard key={c} post={c} />;
+      {mainPosts.map((c, index) => {
+        return <PostCard key={index} post={c} />;
       })}
     </div>
   );

@@ -114,35 +114,35 @@ function* watchLogOut() {
   yield takeEvery(LOG_OUT_REQUEST, logOut);
 }
 
-function loadUserAPI() {
-  return axios.get("/user/", {
-    withCredentials: true
+function loadUserAPI(userId) {
+  // 서버에 요청을 보내는 부분
+  return axios.get(userId ? `/user/${userId}` : '/user/', {
+    withCredentials: true,
   });
 }
 
-function* lodUser() {
+function* loadUser(action) {
   try {
-    // call 동기호출
-    // fork 비동기호출
-    const result = yield call(loadUserAPI); // fork를 하면 서버에 응답이 오기전에 다음거로 넘어감
-    yield put({
-      //put은 dispatch와 동일
+    // yield call(loadUserAPI);
+    const result = yield call(loadUserAPI, action.data);
+    yield put({ // put은 dispatch 동일
       type: LOAD_USER_SUCCESS,
-      data: result.data
+      data: result.data,
+      me: !action.data,
     });
-  } catch (e) {
-    //loadingAPI 실패
-    console.log(e);
+  } catch (e) { // loginAPI 실패
+    console.error(e);
     yield put({
       type: LOAD_USER_FAILURE,
-      error: e
+      error: e,
     });
   }
 }
 
 function* watchLoadUser() {
-  yield takeEvery(LOAD_USER_REQUEST, lodUser);
+  yield takeEvery(LOAD_USER_REQUEST, loadUser);
 }
+
 
 //function* watchHello() {
 //  yield takeLatest(HELLO_SAGA, hello);

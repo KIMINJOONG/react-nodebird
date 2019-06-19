@@ -9,7 +9,7 @@ import AppLayout from "../components/AppLayout";
 import rootSaga from "../sagas";
 import createSagaMiddleware from "@redux-saga/core";
 
-const NodeBird = ({ Component, store }) => {
+const NodeBird = ({ Component, store, pageProps }) => {
   return (
     <Provider store={store}>
       <Head>
@@ -21,7 +21,7 @@ const NodeBird = ({ Component, store }) => {
         <script src="https://cdnjs.cloudflare.com/ajax/libs/antd/3.16.2/antd.js" />
       </Head>
       <AppLayout>
-        <Component />
+        <Component {...pageProps} />
       </AppLayout>
     </Provider>
   );
@@ -29,7 +29,18 @@ const NodeBird = ({ Component, store }) => {
 
 NodeBird.propTypes = {
   Component: PropTypes.elementType.isRequired,
-  store: PropTypes.object
+  store: PropTypes.object,
+  pageProps: PropTypes.object.isRequired
+};
+
+NodeBird.getInitialProps = async (context) => {
+  const { ctx, Component } = context;
+  let pageProps = {};
+  if(context.Component.getInitialProps){
+    pageProps = await Component.getInitialProps(ctx);
+  }
+  return { pageProps };
+  
 };
 
 const configureStore = (initialState, options) => {
