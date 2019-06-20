@@ -2,7 +2,7 @@ import React, { useState, useCallback, useEffect } from "react";
 import { Button, Card, Icon, Avatar, Input, Form, List, Comment } from "antd";
 import PropTypes from "prop-types";
 import { useSelector, useDispatch } from "react-redux";
-import { ADD_COMMENT_REQUEST } from "../reducers/post";
+import { ADD_COMMENT_REQUEST, LOAD_COMMENTS_REQUEST } from "../reducers/post";
 import Link from "next/link";
 
 const PostCard = ({ post }) => {
@@ -14,6 +14,12 @@ const PostCard = ({ post }) => {
 
   const onToggleComment = useCallback(() => {
     setCommentFormOpened(prev => !prev);
+    if(!commentFormOpend) {
+      dispatch({
+        type: LOAD_COMMENTS_REQUEST,
+        data: post.id,
+      });
+    }
   }, []);
 
   const onSubmitComment = useCallback(
@@ -25,11 +31,12 @@ const PostCard = ({ post }) => {
       return dispatch({
         type: ADD_COMMENT_REQUEST,
         data: {
-          postId: post.id
+          postId: post.id,
+          content: commentText,
         }
       });
     },
-    [me && me.id]
+    [me && me.id, commentText]
   );
 
   useEffect(() => {
@@ -54,7 +61,13 @@ const PostCard = ({ post }) => {
         extra={<Button>팔로우</Button>}
       >
         <Card.Meta
-          avatar={<Link href={`/user/${post.User.id}`}><a><Avatar>{post.User.nickname[0]}</Avatar></a></Link>}
+          avatar={(
+            <Link href={{ pathname : `/user/${post.User.id}`, query: { id: post.User.id} }} as={ `/user/${post.User.id}`}>
+              <a>
+                <Avatar>{post.User.nickname[0]}</Avatar>
+              </a>
+            </Link>
+            )}
           title={post.User.nickname}
           description={(
           <div>{post.content.split(/(#[^\s]+)/g).map((v) => {
