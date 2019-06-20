@@ -182,10 +182,7 @@ function* uploadImages(action) {
     const result = yield call(uploadImagesAPI, action.data);
     yield put({
       type: UPLOAD_IMAGES_SUCCESS,
-      data: {
-        postId: action.data,
-        comments: result.data
-      }
+      data: result.data // 서버쪽에서 저장된 주소를 리턴받을 예정
     });
   } catch (e) {
     console.error(e);
@@ -207,6 +204,7 @@ export default function* postSaga() {
     fork(watchAddComment),
     fork(watchLoadComments), 
     fork(watchLoadHashtagPosts), 
-    fork(watchLoadUserPosts)]),
+    fork(watchLoadUserPosts),
     fork(watchUploadImages)
+  ])
 }

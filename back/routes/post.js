@@ -2,6 +2,8 @@ const express = require("express");
 const router = express.Router();
 const { isLoggedIn } = require('./middleware');
 const db = require("../models");
+const multer = require('multer');
+const path = require('path');
 
 router.post("/", isLoggedIn, async (req, res, next) => { // POST /api/post
     try {
@@ -35,7 +37,30 @@ router.post("/", isLoggedIn, async (req, res, next) => { // POST /api/post
     }
 });
 
-router.post("/api/post/images", (req, res) => {});
+// 파일업로드를 위한 multer 설정
+const upload = multer({
+    storage: multer.diskStorage({
+        destination(req, file, done) {
+            done(null, 'uploads');
+        },  
+        filename(req, file, done) {
+            const ext = path.extname(file.originalname);
+            const basename = path.basename(file.originalname, ext); // 제로초.png, ext=== .png, basename === 제로초
+            done(null, basename + new Date().valueOf() + ext); // 파일명이 같더라도 업로드하는 시간을 넣어줌으로써 기존파일에 덮어씌우는것을 방지
+        }
+    }),
+    limits: { fileSize: 20 * 1024 * 1024 }, //용량을 제한 현재 최대 20mb 해커들이 서버를 공격못하게 제한해주는게 좋다
+});
+
+// postForm.js 에서 formData에서 append하는 이름과 array안에 이름이 겹쳐야함
+// 이미지를 한장만 올릴때는 single, 여러장올릴때는 array
+// upload.none() => 이미지나 파일을 하나도 안올릴때
+// upload.fileds => 이미지가 각각 이름이 틀릴때
+router.post("/images", upload.array('image') ,(req, res) => {
+    // single이면 file, arrray, fileds면 files
+    console.log(req.files);
+    res.json(req.files.map(v => v.filename));
+});
 
 router.get('/:id/comments', async (req, res, next) => {
     try{
