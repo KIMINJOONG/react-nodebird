@@ -5,38 +5,6 @@ const db = require("../models");
 const multer = require('multer');
 const path = require('path');
 
-router.post("/", isLoggedIn, async (req, res, next) => { // POST /api/post
-    try {
-        const hashtags = req.body.content.match(/#[^\s]+/g);
-        const newPost = await db.Post.create({
-            content: req.body.content, // ex) '제로초 파이팅 #구독 #좋아요 눌러주세요'
-            UserId: req.user.id
-        });
-        if(hashtags) {
-            const result = await Promise.all (hashtags.map(tag => db.Hashtag.findOrCreate({
-                where: { 
-                    name: tag.slice(1).toLowerCase()
-                },
-            })));
-            await newPost.addHashtags(result.map(r=> r[0]));
-        }
-        // const User = aiwat newPost.getUser();
-        // newPost.User =User;
-        // res.json(newPost)
-        // 이 방법도 가능
-        const fullPost = await db.Post.findOne({
-            where: {id : newPost.id},
-            include: [{
-                model: db.User,
-            }]
-        })
-        res.json(fullPost); 
-    } catch(e){
-        console.error(e);
-        next(e);
-    }
-});
-
 // 파일업로드를 위한 multer 설정
 const upload = multer({
     storage: multer.diskStorage({
@@ -51,6 +19,55 @@ const upload = multer({
     }),
     limits: { fileSize: 20 * 1024 * 1024 }, //용량을 제한 현재 최대 20mb 해커들이 서버를 공격못하게 제한해주는게 좋다
 });
+
+// 주소들은 텍스트라서 none을 사용
+// 파일들은 req.files , 일반값 -> req.body 
+router.post("/", isLoggedIn, upload.none(), async (req, res, next) => { // POST /api/post
+    try {
+        const hashtags = req.body.content.match(/#[^\s]+/g);
+        const newPost = await db.Post.create({
+            content: req.body.content, // ex) '제로초 파이팅 #구독 #좋아요 눌러주세요'
+            UserId: req.user.id
+        });
+        if(hashtags) {
+            const result = await Promise.all (hashtags.map(tag => db.Hashtag.findOrCreate({
+                where: { 
+                    name: tag.slice(1).toLowerCase()
+                },
+            })));
+            await newPost.addHashtags(result.map(r=> r[0]));
+        }
+        if (req.body.image) { // 이미지 주소를 여러개 올리면 image: [주소1, 주소2]
+           if (Array.isArray(req.body.image)) {
+               const images = await Promise.all(req.body.image.map((image) => {
+                   return db.Image.create({ src: image });
+               }));
+               await newPost.addImages(images);
+           }  else { // 이미지를 하나만 올리면 image: 주소1
+               const image = await db.Image.create({ src: req.body.image});
+               await newPost.addImage(image);
+           }
+        }
+        // const User = aiwat newPost.getUser();
+        // newPost.User =User;
+        // res.json(newPost)
+        // 이 방법도 가능
+        const fullPost = await db.Post.findOne({
+            where: {id : newPost.id},
+            include: [{
+                model: db.User,
+            }, {
+                model: db.Image
+            }]
+        })
+        res.json(fullPost); 
+    } catch(e){
+        console.error(e);
+        next(e);
+    }
+});
+
+
 
 // postForm.js 에서 formData에서 append하는 이름과 array안에 이름이 겹쳐야함
 // 이미지를 한장만 올릴때는 single, 여러장올릴때는 array

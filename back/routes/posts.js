@@ -8,6 +8,8 @@ router.get("/", async (req, res, next) => {
             include: [{
                 model: db.User,
                 attributes: ['id', 'nickname'],
+            }, {
+                model: db.Image
             }],
             order: [['createdAt', 'DESC']], // desc 는 내림차순, asc는 오름차순
         });
