@@ -5,6 +5,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { ADD_COMMENT_REQUEST, LOAD_COMMENTS_REQUEST, UNLIKE_POST_REQUEST, LIKE_POST_REQUEST, RETWEET_REQUEST } from "../reducers/post";
 import Link from "next/link";
 import PostImages from "./PostImages";
+import PostCardContent from "./PostCardContent";
 
 const PostCard = ({ post }) => {
   const [commentFormOpend, setCommentFormOpened] = useState(false);
@@ -88,9 +89,34 @@ const PostCard = ({ post }) => {
           <Icon type="message" key="message" onClick={onToggleComment} />,
           <Icon type="ellipsis" key="ellipsis" />
         ]}
+        title={post.RetweetId ? `${post.User.nickname}님이 리트윗하셨습니다.` : null}
         extra={<Button>팔로우</Button>}
       >
-        <Card.Meta
+        {post.RetweetId && post.Retweet ?
+          (
+            <Card
+            cover={
+              post.Retweet.Images && 
+              post.Retweet.Images[0] && 
+              <PostImages images={post.Retweet.Images} />
+            }
+            >
+            <Card.Meta
+            avatar={(
+            <Link href={{ pathname : `/user/${post.Retweet.User.id}`, query: { id: post.User.id} }} as={ `/user/${post.Retweet.User.id}`}>
+              <a>
+                <Avatar>{post.Retweet.User.nickname[0]}</Avatar>
+              </a>
+            </Link>
+            )}
+          title={post.Retweet.nickname}
+          description={ <PostCardContent postData={post.Retweet.content} />} // a tag x -> Link -> 싱글페이지 어플리케이션 유지를 위해
+        />
+        </Card>
+          )
+        :
+        (
+          <Card.Meta
           avatar={(
             <Link href={{ pathname : `/user/${post.User.id}`, query: { id: post.User.id} }} as={ `/user/${post.User.id}`}>
               <a>
@@ -99,18 +125,10 @@ const PostCard = ({ post }) => {
             </Link>
             )}
           title={post.User.nickname}
-          description={(
-          <div>{post.content.split(/(#[^\s]+)/g).map((v) => {
-            if(v.match(/#[^\s]+/)){
-              return(
-                <Link href={`/hashtag/${v.slice(1)}`}><a>{v}</a></Link>
-              )
-            }
-            return v;
-          })}
-          </div>
-          )} // a tag x -> Link -> 싱글페이지 어플리케이션 유지를 위해
+          description={ <PostCardContent postData={post.content} />} // a tag x -> Link -> 싱글페이지 어플리케이션 유지를 위해
         />
+        )}
+        
       </Card>
       {commentFormOpend && (
         <>
