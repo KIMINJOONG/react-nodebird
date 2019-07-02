@@ -14,7 +14,7 @@ router.post("/", async (req, res, next) => {
   try {
     const exUser = await db.User.findOne({
       where: {
-        userId: req.body.userId
+        userId: req.body.userId,
       }
     });
     if (exUser) {
@@ -34,7 +34,6 @@ router.post("/", async (req, res, next) => {
   }
 });
 router.get("/:id", async(req, res, next) => {
-  console.log("dd");
   try {
     const user = await db.User.findOne({
       where: { id: parseInt(req.params.id, 10) },
