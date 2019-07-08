@@ -2,6 +2,7 @@ import React from "react";
 import Head from "next/head";
 import PropTypes from "prop-types";
 import withRedux from "next-redux-wrapper";
+import withReduxSaga from 'next-redux-saga'; // 서버사이드렌더링시 필수
 import { Provider } from "react-redux";
 import { createStore, compose, applyMiddleware } from "redux";
 import reducer from "../reducers";
@@ -59,8 +60,8 @@ const configureStore = (initialState, options) => {
             : f => f
         );
   const store = createStore(reducer, initialState, enhancer);
-  sagaMiddleware.run(rootSaga);
+  store.sagaTask = sagaMiddleware.run(rootSaga); // 이부분도 서버사이드 렌더링
   return store;
 };
 
-export default withRedux(configureStore)(NodeBird);
+export default withRedux(configureStore)(withReduxSaga(NodeBird)); //서버사이드 렌더링 withReduxSaga추가

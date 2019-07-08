@@ -63,6 +63,8 @@ User.propTypes = {
 
 // getInitialprops => next에서 임의로 추가한 라이프 싸이클 componentdidmount보다 더 빨리 실행됨
 // 서버사이드 렌더링 서버쪽 데이터를 미리 불러와서 렌더링해줄때 유용
+// 서버쪽에서 페이지를 처음으로 불러올때 실행
+// 프론트에서 페이지를 넘낟즐때 프론트에서 실행
 User.getInitialProps = async (context) => {
      return { id: parseInt(context.query.id, 10) }
 };
