@@ -9,6 +9,8 @@ import reducer from "../reducers";
 import AppLayout from "../components/AppLayout";
 import rootSaga from "../sagas";
 import createSagaMiddleware from "@redux-saga/core";
+import { LOAD_USER_REQUEST } from "../reducers/user";
+import axios from "axios";
 
 const NodeBird = ({ Component, store, pageProps }) => {
   return (
@@ -41,6 +43,17 @@ NodeBird.getInitialProps = async (context) => {
   let pageProps = {};
   if(context.Component.getInitialProps){
     pageProps = await Component.getInitialProps(ctx);
+  } // 순서가 중요함! 절대 바꾸지말것 
+  const state = ctx.store.getState();
+  //서버에서 한번 클라이언트에서 한번 실행하기때문에 분기처리 필수
+  const cookie = ctx.isServer ? ctx.req.headers.cookie : '';
+  if(ctx.isServer && cookie) {
+    axios.defaults.headers.Cookie = cookie;
+  }
+  if(!state.user.me){
+    ctx.store.dispatch({
+      type: LOAD_USER_REQUEST,
+    });
   }
   return { pageProps };
   
