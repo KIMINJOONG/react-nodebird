@@ -7,21 +7,9 @@ import { userInfo } from "os";
 import { Card, Avatar } from "antd";
 import { LOAD_USER_REQUEST } from "../reducers/user";
 
-const User = ({ id }) => {
-    const dispatch = useDispatch();
+const User = () => {
     const { mainPosts } = useSelector(state => state.post);
     const { userInfo } = useSelector(state => state.user);
-
-    useEffect(() => {
-        dispatch({
-            type: LOAD_USER_REQUEST,
-            data: id
-        });
-        dispatch({
-            type: LOAD_USER_POSTS_REQUEST,
-            data: id
-        });
-    }, []);
 
     return (
         <div>
@@ -66,7 +54,16 @@ User.propTypes = {
 // 서버쪽에서 페이지를 처음으로 불러올때 실행
 // 프론트에서 페이지를 넘낟즐때 프론트에서 실행
 User.getInitialProps = async (context) => {
-     return { id: parseInt(context.query.id, 10) }
+    const id = parseInt(context.query.id, 10);
+    context.store.dispatch({
+        type: LOAD_USER_REQUEST,
+        data: id
+    });
+    context.store.dispatch({
+        type: LOAD_USER_POSTS_REQUEST,
+        data: id
+    });
+     return { id }
 };
 
 export default User;
