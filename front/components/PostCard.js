@@ -1,8 +1,8 @@
 import React, { useState, useCallback, useEffect } from "react";
-import { Button, Card, Icon, Avatar, Input, Form, List, Comment } from "antd";
+import { Button, Card, Icon, Avatar, Input, Form, List, Comment, Popover } from "antd";
 import PropTypes from "prop-types";
 import { useSelector, useDispatch } from "react-redux";
-import { ADD_COMMENT_REQUEST, LOAD_COMMENTS_REQUEST, UNLIKE_POST_REQUEST, LIKE_POST_REQUEST, RETWEET_REQUEST } from "../reducers/post";
+import { ADD_COMMENT_REQUEST, LOAD_COMMENTS_REQUEST, UNLIKE_POST_REQUEST, LIKE_POST_REQUEST, RETWEET_REQUEST, REMOVE_POST_REQUEST } from "../reducers/post";
 import Link from "next/link";
 import PostImages from "./PostImages";
 import PostCardContent from "./PostCardContent";
@@ -93,20 +93,53 @@ const PostCard = ({ post }) => {
     });
   });
 
+  const onRemovePost = useCallback(userId => () => {
+    dispatch({
+      type: REMOVE_POST_REQUEST,
+      data: userId
+    })
+  })
+
   return (
     <div>
       <Card
         key={+post.createdAt}
-        cover={post.Images && post.Images[0] && <PostImages images={post.Images}  />}
+        cover={post.Images && post.Images[0] && <PostImages images={post.Images} />}
         actions={[
           <Icon type="retweet" key="retweet" onClick={onRetweet} />,
-          <Icon type="heart" key="heart" theme={liked ? 'twoTone' : 'outlined'} twoToneColor="#eb2f96" onClick={onToggleLike} />,
+          <Icon
+            type="heart"
+            key="heart"
+            theme={liked ? 'twoTone' : 'outlined'}
+            twoToneColor="#eb2f96"
+            onClick={onToggleLike}
+          />,
           <Icon type="message" key="message" onClick={onToggleComment} />,
-          <Icon type="ellipsis" key="ellipsis" />
+          <Popover
+            key="ellipsis"
+            content={(
+              <Button.Group>
+                {me && post.UserId === me.id
+                  ? (
+                    <>
+                      <Button>수정</Button>
+                      <Button type="danger" onClick={onRemovePost(post.id)}>삭제</Button>
+                    </>
+                  )
+                  : <Button>신고</Button>}
+              </Button.Group>
+            )}
+          >
+            <Icon type="ellipsis" />
+          </Popover>,
         ]}
         title={post.RetweetId ? `${post.User.nickname}님이 리트윗하셨습니다.` : null}
-        extra={!me || post.User.id === me.id ? null : me.Followings && me.Followings.find(v => v.id === post.User.id) ?
-        <Button onClick={onUnfollow(post.User.id)}>언팔로우</Button> : <Button onClick={onFollow(post.User.id)}>팔로우</Button>}
+        extra={!me || post.User.id === me.id
+          ? null
+          : me.Followings && me.Followings.find(v => v.id === post.User.id)
+            ? <Button onClick={onUnfollow(post.User.id)}>언팔로우</Button>
+            : <Button onClick={onFollow(post.User.id)}>팔로우</Button>
+        }
       >
         {post.RetweetId && post.Retweet ?
           (
