@@ -128,6 +128,7 @@ router.get("/:id/followers", isLoggedIn,  async(req, res, next) => {
     const user = await db.User.findOne({
       where: { id: parseInt(req.params.id, 10) },
     });
+    console.log(req.query);
     const followers = await user.getFollowers({
       attributes: ['id', 'nickname'],
       limit: parseInt(req.query.limit, 10),
