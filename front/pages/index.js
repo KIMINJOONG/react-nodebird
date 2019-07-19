@@ -9,6 +9,23 @@ const Home = () => {
   const { mainPosts } = useSelector(state => state.post);
   const dispatch = useDispatch();
 
+  const onScroll = () => {
+    console.log(window.scrollY, document.documentElement.clientHeight, document.documentElement.scrollHeight);
+    if(window.scrollY + document.documentElement.clientHeight > document.documentElement.scrollHeight - 300) {
+      dispatch({
+        type: LOAD_MAIN_POSTS_REQUEST,
+        lastId: mainPosts[mainPosts.length - 1].id
+      });
+    }  
+  };
+
+  useEffect(() => {
+    window.addEventListener('scroll', onScroll);
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+    };
+  }, [mainPosts.length]);
+
   return (
     <div>
       {me && <PostForm />}
