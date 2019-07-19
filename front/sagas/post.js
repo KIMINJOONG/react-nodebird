@@ -1,4 +1,4 @@
-import { all, fork, takeLatest, put, delay, call } from "redux-saga/effects";
+import { all, fork, takeLatest, put, delay, call, throttle } from "redux-saga/effects";
 import {
   ADD_POST_REQUEST,
   ADD_POST_SUCCESS,
@@ -85,7 +85,8 @@ function* loadMainPosts(action) {
 }
 
 function* watchLoadMainPosts() {
-  yield takeLatest(LOAD_MAIN_POSTS_REQUEST, loadMainPosts);
+  // throttle ? 같은게 연달아서 호출되는걸 막아주는 역할 한번 호출되면 그다음은 2초정도 같은걸 호출하는것을 막아줌
+  yield throttle(2000, LOAD_MAIN_POSTS_REQUEST, loadMainPosts);
 }
 
 function loadHashtagPostsAPI(tag, lastId = 0) {

@@ -1,24 +1,13 @@
 export const initialState = {
-  mainPosts: [
-    {
-      id: 1,
-      User: {
-        id: 1,
-        nickname: "제주주"
-      },
-      content: "첫번째 게시물",
-      img:
-        "https://bookthumb-phinf.pstatic.net/cover/137/995/13799585.jpg?udate=20180726",
-      Comments: []
-    }
-  ], // 화면에 보일 포스트들
+  mainPosts: [], // 화면에 보일 포스트들
   imagePaths: [], //미리보기 이미지 경로
   addPostErrorReason: false, // 포스트 업로드 실패 사유
   isAddingPost: false, // 포스트 업로드 중                                              
   postAdded: false, //포스트 업로드 성공
   isAddingComment: false,
   addCommentErrorReason: "",
-  commentAdded: false
+  commentAdded: false,
+  hasMorePost: false
 };
 
 
@@ -132,7 +121,8 @@ export default (state = initialState, action) => {
     case LOAD_MAIN_POSTS_REQUEST: {
       return{
         ...state,
-        mainPosts: [],
+        mainPosts: action.lastId === 0 ? [] : state.mainPosts,
+        hasMorePost: action.lastId ? state.hasMorePost : true,
       }
     }
     case LOAD_MAIN_POSTS_SUCCESS :
@@ -140,7 +130,8 @@ export default (state = initialState, action) => {
     case LOAD_USER_POSTS_SUCCESS: {
       return {
         ...state,
-        mainPosts: action.data
+        mainPosts: state.mainPosts.concat(action.data),
+        hasMorePost: action.data.length === 10,
       }
     }
     case LOAD_MAIN_POSTS_FAILURE :
