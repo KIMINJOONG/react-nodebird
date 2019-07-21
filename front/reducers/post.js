@@ -10,7 +10,8 @@ export const initialState = {
   addCommentErrorReason: "",
   commentAdded: false,
   hasMorePost: false,
-  addingPostErrorReason: ''
+  addingPostErrorReason: '',
+  singlePost: null
 };
 
 
@@ -59,6 +60,10 @@ export const RETWEET_FAILURE = "RETWEET_FAILURE";
 export const REMOVE_POST_REQUEST = "REMOVE_POST_REQUEST";
 export const REMOVE_POST_SUCCESS = "REMOVE_POST_SUCCESS";
 export const REMOVE_POST_FAILURE = "REMOVE_POST_FAILURE";
+
+export const LOAD_POST_REQUEST = "LOAD_POST_REQUEST";
+export const LOAD_POST_SUCCESS = "LOAD_POST_SUCCESS";
+export const LOAD_POST_FAILURE = "LOAD_POST_FAILURE";
 
 export default (state = initialState, action) => {
   return produce(state, (draft) => {
@@ -260,9 +265,14 @@ export default (state = initialState, action) => {
         };
       }
       case REMOVE_POST_FAILURE: {
-        return {
-          ...state,
-        };
+        break;
+      }
+      case LOAD_POST_REQUEST: {
+        break;
+      }
+      case LOAD_POST_SUCCESS: {
+        draft.singlePost = action.data;
+        break;
       }
       default: {
         return {
