@@ -11,37 +11,39 @@ import createSagaMiddleware from "@redux-saga/core";
 import { LOAD_USER_REQUEST } from "../reducers/user";
 import axios from "axios";
 import Helmet from 'react-helmet';
-import { Container } from 'next/app';
+import App, { Container } from 'next/app';
 
 const NodeBird = ({ Component, store, pageProps }) => {
   return (
     <Container>
       <Provider store={store}>
-        <Helmet 
+      <Helmet
           title="NodeBird"
           htmlAttributes={{ lang: 'ko' }}
           meta={[{
-            charSet: 'UTF-8'
+            charset: 'UTF-8',
           }, {
-            name: 'viewport', content: 'width=device-width,initial-scale=1.0,minimum-scale=1.0,user-scalable=yes,viewport-fit=cover',
+            name: 'viewport',
+            content: 'width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=yes,viewport-fit=cover',
           }, {
             'http-equiv': 'X-UA-Compatible', content: 'IE=edge',
           }, {
-            name: 'description', content: '제로초의 NodeBird SNS'
+            name: 'description', content: '제로초의 NodeBird SNS',
           }, {
-            name: 'og:title', content: 'NodeBird'
-          },{
+            name: 'og:title', content: 'NodeBird',
+          }, {
+            name: 'og:description', content: '제로초의 NodeBird SNS',
+          }, {
             property: 'og:type', content: 'website',
           }]}
           link={[{
-            rel: 'stylesheet', href: 'https://cdnjs.cloudflare.com/ajax/libs/antd/3.16.2/antd.css'
+            rel: 'shortcut icon', href: '/favicon.ico',
           }, {
-            rel: 'stylesheet', href: 'https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick-theme.min.css'
+            rel: 'stylesheet', href: 'https://cdnjs.cloudflare.com/ajax/libs/antd/3.16.2/antd.css',
           }, {
-            rel: 'stylesheet', href: 'https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick.min.css'
-          }]}
-          script={[{
-            src: 'https://cdnjs.cloudflare.com/ajax/libs/antd/3.16.2/antd.js'
+            rel: 'stylesheet', href: 'https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick.min.css',
+          }, {
+            rel: 'stylesheet', href: 'https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick-theme.min.css',
           }]}
         />
         <AppLayout>
@@ -62,20 +64,19 @@ NodeBird.propTypes = {
 NodeBird.getInitialProps = async (context) => {
   const { ctx, Component } = context;
   let pageProps = {};
-  
   const state = ctx.store.getState();
-  //서버에서 한번 클라이언트에서 한번 실행하기때문에 분기처리 필수
   const cookie = ctx.isServer ? ctx.req.headers.cookie : '';
-  if(ctx.isServer && cookie) {
+  axios.defaults.headers.Cookie = '';
+  if (ctx.isServer && cookie) {
     axios.defaults.headers.Cookie = cookie;
   }
-  if(!state.user.me){
+  if (!state.user.me) {
     ctx.store.dispatch({
       type: LOAD_USER_REQUEST,
     });
   }
-  if(Component.getInitialProps) {
-    pageProps = await Component.getInitialProps(ctx);
+  if (Component.getInitialProps) {
+    pageProps = await Component.getInitialProps(ctx) || {};
   }
   return { pageProps };
   
