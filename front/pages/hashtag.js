@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useEffect } from "react";
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { LOAD_HASHTAG_POSTS_REQUEST } from "../reducers/post";
@@ -30,7 +30,7 @@ const Hashtag = ({ tag }) => {
     return (
         <div>
             {mainPosts.map(c => (
-                <PostCard key={c.createdAt} post={c} />
+                <PostCard key={c.id} post={c} />
             ))}
         </div>
     );

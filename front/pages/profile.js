@@ -49,7 +49,6 @@ const Profile = () => {
         size="small"
         header={<div>팔로잉 목록</div>}
         loadMore={hasMoreFollowing && <Button style={{ width: "100%" }} onClick={loadMoreFollowings}>더 보기</Button>}
-        boardred
         dataSource={followingList}
         renderItem={item => (
           <List.Item style={{ marginTop: "20px" }}>
@@ -65,7 +64,6 @@ const Profile = () => {
         size="small"
         header={<div>팔로우 목록</div>}
         loadMore={hasMoreFollower && <Button style={{ width: "100%" }} onClick={loadMoreFollowers}>더 보기</Button>}
-        boardred
         dataSource={followerList}
         renderItem={item => (
           <List.Item style={{ marginTop: "20px" }}>

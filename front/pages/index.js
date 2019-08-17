@@ -36,7 +36,7 @@ const Home = () => {
     <div>
       {me && <PostForm />}
       {mainPosts.map((c, index) => {
-        return <PostCard key={index} post={c} />;
+        return <PostCard key={c.id} post={c} />;
       })}
     </div>
   );
