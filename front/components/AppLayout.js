@@ -2,10 +2,9 @@ import React, { useEffect } from "react";
 import Link from "next/link";
 import PropTypes from "prop-types";
 import { Menu, Input, Row, Col } from "antd";
-import LoginForm from "../components/LoginForm";
-import UserProfile from "./UserProfile";
+import LoginForm from "../containers/LoginForm";
+import UserProfile from "../containers/UserProfile";
 import { useSelector, useDispatch } from "react-redux";
-import { LOAD_USER_REQUEST } from "../reducers/user";
 import Router from 'next/router';
 
 const AppLayout = ({ children }) => {
@@ -54,7 +53,7 @@ const AppLayout = ({ children }) => {
 };
 
 AppLayout.propTypes = {
-  children: PropTypes.node
+  children: PropTypes.node.isRequired
 };
 
 export default AppLayout;
