@@ -13,6 +13,14 @@ import axios from "axios";
 import Helmet from 'react-helmet';
 import App, { Container } from 'next/app';
 
+// class NodeBird extends App {
+//   static getInitialProps(context) {
+
+//   }
+//   render() {
+
+//   }
+// }
 const NodeBird = ({ Component, store, pageProps }) => {
   return (
     <Container>
