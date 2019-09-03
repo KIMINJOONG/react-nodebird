@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from "react";
+import React, { useState, useCallback, useEffect, memo } from "react";
 import { Button, Card, Icon, Avatar, Input, Form, List, Comment, Popover } from "antd";
 import PropTypes from "prop-types";
 import { useSelector, useDispatch } from "react-redux";
@@ -9,16 +9,19 @@ import PostCardContent from "../components/PostCardContent";
 import { FOLLOW_USER_REQUEST, UNFOLLOW_USER_REQUEST } from "../reducers/user";
 import styled from 'styled-components';
 import moment from 'moment';
+import CommentForm from "./CommentForm";
 moment.locale('ko');
 
 const CardWrapper = styled.div`
    margin-bottom: 20px;
 `;
-const PostCard = ({ post }) => {
+
+// memo가 얕은 비교
+// 너무 복잡한 구조이면 리렌더링이 되야하는데 안될수도 있다.
+const PostCard = memo(({ post }) => {
   const [commentFormOpend, setCommentFormOpened] = useState(false);
-  const [commentText, setCommentText] = useState("");
+  
   const { me } = useSelector(state => state.user);
-  const { commentAdded, isAddingComment } = useSelector(state => state.post);
   const dispatch = useDispatch();
 
   const liked = me && post.Likers && post.Likers.find(v => v.id === me.id);
@@ -49,31 +52,6 @@ const PostCard = ({ post }) => {
       })
     }
   },[me && me.id && post && post.id, liked]);
-
-  const onSubmitComment = useCallback(
-    e => {
-      e.preventDefault();
-      if (!me) {
-        return alert("로그인이 필요합니다.");
-      }
-      return dispatch({
-        type: ADD_COMMENT_REQUEST,
-        data: {
-          postId: post.id,
-          content: commentText,
-        }
-      });
-    },
-    [me && me.id, commentText]
-  );
-
-  useEffect(() => {
-    setCommentText("");
-  }, [commentAdded === true]);
-
-  const onChangeCommentText = useCallback(e => {
-    setCommentText(e.target.value);
-  }, []);
 
   const onRetweet = useCallback(() => {
     if(!me){
@@ -187,18 +165,7 @@ const PostCard = ({ post }) => {
       </Card>
       {commentFormOpend && (
         <>
-          <Form onSubmit={onSubmitComment}>
-            <Form.Item>
-              <Input.TextArea
-                rows={4}
-                value={commentText}
-                onChange={onChangeCommentText}
-              />
-            </Form.Item>
-            <Button type="primary" htmlType="submit" loading={isAddingComment}>
-              삐약
-            </Button>
-          </Form>
+          <CommentForm post={post} />
           <List
             header={`${post.Comments ? post.Comments.length : 0} 댓글`}
             itemLayout="horizontal"
@@ -217,7 +184,7 @@ const PostCard = ({ post }) => {
       )}
     </CardWrapper>
   );
-};
+});
 
 PostCard.propTypes = {
   post: PropTypes.shape({
